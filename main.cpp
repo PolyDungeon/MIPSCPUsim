@@ -516,7 +516,10 @@ void renderBoxes() {
                                 {
                                     insCount = cpuObj.imm;
                                 }
-                                else (cpuObj.imm )
+                                else //if (cpuObj.imm)
+                                {
+
+                                }
                                 
                             }
                             else if (ex != "j" && ex != "beq" && insCount < numLines - 1)
