@@ -215,19 +215,18 @@ string CPUsects::MemoryAccess(vector<string> ins)
     if (type == 35)
     {
         //load
-        int address = binToInt(ins[2]);
-        int value = meme.readMemory(address);
-        registers[targetr] = value;
+        lastAddress = registers[targetr] + imm;
+        int value = meme.readMemory(lastAddress);
+        registers[r1] = value;
         return intToBin(value, 8);
     }
     else if (type == 43)
     {
         //store
-        int address = binToInt(ins[2]);
-        int value = binToInt(ins[3]);
-        targetr = value;
-        meme.writeMemory(address, value);
-        return intToBin(value, 8);
+        lastAddress = registers[targetr] + imm;
+        lastValue = registers[r1];
+        meme.writeMemory(lastAddress, lastValue);
+        return intToBin(lastValue, 8);
     }
     else
     {

@@ -41,6 +41,11 @@ static char textBuffer[128] = "";
 static char pathString[128] = "";
 static bool pathSubmitted = false;
 static bool callFunct = false;
+static vector<string> memAdds;
+static vector<int> memVals;
+static bool memUsed = false;
+int l = 0;
+int g = 0;
 CPU::CPUsects cpuObj;
 bool fileLoad = true;
 std::vector<std::string> lines; // Vector to store lines of data
@@ -298,11 +303,11 @@ void renderBoxes() {
             
             lines.push_back(line);
             unsigned int intData = cpuObj.binToInt(line);
-            cpuObj.meme.writeMemory(0x600 + (32 * numLines), intData);
+            cpuObj.meme.writeMemory(0xC18 + (32 * numLines), intData);
             numLines++;
         }
 
-        string instructions = cpuObj.intToBin(cpuObj.meme.readMemory(0x600 + 2 * 32), 32);
+        string instructions = cpuObj.intToBin(cpuObj.meme.readMemory(0xC18 + 2 * 32), 32);
         fileLoad = false;
     }
     ImGui::Begin("Boxes", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
@@ -354,7 +359,25 @@ void renderBoxes() {
                 ImGui::Text("   And Count: %d", cpuObj.andCount);
                 ImGui::SameLine();
                 ImGui::Text("   Slt Count: %d", cpuObj.sltCount);
+                ImGui::SameLine();
+                ImGui::Text("   BEQ Count: %d", cpuObj.beqCount);
+                ImGui::Text("   j Count: %d", cpuObj.jCount);
                 ImGui::Text("Program Counter %d", cpuObj.PC);
+                ImGui::Text("");
+                if (memUsed == true)
+                {
+                    ImGui::Text("Used Memory: ");
+
+                    for (int k = 0; k < 0xC18; k++)
+                    {
+                        if (cpuObj.meme.readMemory(k) > 0)
+                        {
+                            ImGui::TextWrapped("Address: 0x%s  Value: %d", cpuObj.intToBin(k, 16).c_str(), cpuObj.meme.readMemory(k));
+                        }
+                    }
+
+                }
+                
 
             }
             ImGui::EndChild();
@@ -481,13 +504,26 @@ void renderBoxes() {
                         {
                             if (ex == "lw")
                             {
-                                ImGui::TextWrapped("loading value: %d from address: %s", cpuObj.registers[cpuObj.targetr], ins[2].c_str());
+                                ImGui::TextWrapped("loading value: %d from address: %s", cpuObj.registers[cpuObj.targetr + 1], ins[2].c_str());
                                 // Computed address must be a multiple of 4
                             }
                             else if (ex == "sw")
                             {
-                                ImGui::TextWrapped("storing value: %d in address: %s", cpuObj.meme.readMemory(cpuObj.binToInt(ins[2])), ins[2].c_str());
+                                int refVal = 0;
+                                if (memUsed == false)
+                                {
+                                    memUsed = true;
+                                }
+                                string curAddress = ins[2];
+                                curAddress.append(ins[3]);
+                                ImGui::TextWrapped("storing value: %d in address: %s", cpuObj.lastValue, curAddress.c_str());
                                 //Computed address must be a multiple of 4
+                                memAdds.push_back(curAddress);
+                                memVals.push_back(cpuObj.lastValue);
+                                memAdds.push_back("");
+                                memVals.push_back(0);
+                                g++;
+                                
                             }
                         }
                     }
@@ -586,10 +622,8 @@ void renderBoxes() {
                 ImGui::Text("Memory");
                 for (int k = 0; k < numLines; k++)
                 {
-                    string instructions = cpuObj.intToBin(cpuObj.meme.readMemory(0x600 + k * 32), 32);
-                    ImGui::TextWrapped("Address 0x%x: %s", 0x600 + k * 32,lines[k].c_str());
-                    //cout << instructions;
-                    //ImGui::Text("%d", k);
+                    string instructions = cpuObj.intToBin(cpuObj.meme.readMemory(0xC18 + k * 32), 32);
+                    ImGui::TextWrapped("Address 0x%x: %s", 0xC18 + k * 32,lines[k].c_str());
                 }
 
                 //ImGui::TextWrapped((cpuObj.intToBin(cpuObj.meme.readMemory(0x2 + (numLines * 32), 32 * numLines))));

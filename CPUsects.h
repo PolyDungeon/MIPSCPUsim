@@ -34,6 +34,8 @@ namespace CPU{
       int jCount;
       int beqCount = 0;
       vector<int> registers;
+      int lastAddress = 0;
+      int lastValue = 0;
 
       CPUsects()
       {
