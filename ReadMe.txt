@@ -1,4 +1,4 @@
-This project requires Windows to run. If needed I will create a version that does not need it. I just ran out of time
+This project requires Windows to run. If needed, I will create a version that does not need it. I just ran out of time
 
 Run CPU3300.exe to start. 
 Enter your path to the file such as
@@ -13,4 +13,4 @@ other??
 Created by
 David Hayden Copeland
 and
-Christopher Hattan
+Chris Hattan
