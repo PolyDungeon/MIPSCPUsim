@@ -15,7 +15,7 @@ int MemoryRAM::readMemory(int address)
       std::cerr << "Error: Invalid memory address" << std::endl;
       return 0; // Return default value if address is out of bounds
   }
-
+  //cout <<"addy: " << address << "\n mem: " << memory[address];
   // Read from memory and update cache
   int data = memory[address];
   cache[address] = data;

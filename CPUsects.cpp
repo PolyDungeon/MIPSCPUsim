@@ -68,7 +68,8 @@ vector<string> CPUsects::fetch(string input) {
         pass.push_back(opcode);
         pass.push_back(input.substr(6, 5)); // $RS
         pass.push_back(input.substr(11, 5)); // $RT
-        pass.push_back(input.substr(16, 16)); // imm 
+        pass.push_back(input.substr(16, 16)); // imm
+        //cout << "LW pass 0: " << pass[0] << " pass 1: " << pass[1] << " pass 2: " << pass[2] << " pass 3: " << pass[3] << "\n";
         //InstructionDecode(pass);
     }
     //Sw
@@ -79,6 +80,7 @@ vector<string> CPUsects::fetch(string input) {
         pass.push_back(input.substr(6, 5));
         pass.push_back(input.substr(11, 5));
         pass.push_back(input.substr(16, 16));
+        //cout << "SW pass 0: " << pass[0] << " pass 1: " << pass[1] << " pass 2: " << pass[2] << " pass 3: " << pass[3] << "\n";
         //InstructionDecode(pass);
     }
     //Beq
@@ -132,20 +134,26 @@ int CPUsects::InstructionDecode(vector<string> ins)
         return 1;
     }
     //3 registers  and one immediate
-    else if (type == 35 || type == 43 || type == 4 || type == 8)
+    else if (type == 4 || type == 8)
     {
         //need to implement register use
-
         r1 = binToInt(ins[1]);
         targetr = binToInt(ins[2]);
         imm = binToInt(ins[3]);
         return 2;
     }
-    //no registers only imm
-    else if (type == 43)
+    else if (type == 35 || type == 43)
     {
-        //J
-        imm = binToInt(ins[1]);
+        r1 = binToInt(ins[2]);
+        targetr = binToInt(ins[1]);
+        imm = binToInt(ins[3]);
+        return 2;
+    }
+    //no registers only imm
+    else if (type == 2)
+    {
+        //J   
+        //imm = binToInt(ins[1]);
         return 3;
     }
 
@@ -218,6 +226,7 @@ string CPUsects::MemoryAccess(vector<string> ins)
         lastAddress = registers[targetr] + imm;
         int value = meme.readMemory(lastAddress);
         registers[r1] = value;
+        lastMem = intToBin(lastAddress, 16);
         return intToBin(value, 8);
     }
     else if (type == 43)
@@ -226,6 +235,7 @@ string CPUsects::MemoryAccess(vector<string> ins)
         lastAddress = registers[targetr] + imm;
         lastValue = registers[r1];
         meme.writeMemory(lastAddress, lastValue);
+        lastMem = intToBin(lastAddress, 16);
         return intToBin(lastValue, 8);
     }
     else

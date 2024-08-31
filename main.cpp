@@ -425,7 +425,7 @@ void renderBoxes() {
                             }
                             else if (output == 3)
                             {
-                                ImGui::Text("imm: \n%s", cpuObj.imm);
+                                ImGui::Text("imm: \n%d", cpuObj.imm);
                             }
                             else
                             {
@@ -504,7 +504,7 @@ void renderBoxes() {
                         {
                             if (ex == "lw")
                             {
-                                ImGui::TextWrapped("loading value: %d from address: %s", cpuObj.registers[cpuObj.targetr + 1], ins[2].c_str());
+                                ImGui::TextWrapped("loading value: %d from address: %s", cpuObj.registers[(cpuObj.r1)], cpuObj.lastMem.c_str());
                                 // Computed address must be a multiple of 4
                             }
                             else if (ex == "sw")
@@ -515,13 +515,14 @@ void renderBoxes() {
                                     memUsed = true;
                                 }
                                 string curAddress = ins[2];
-                                curAddress.append(ins[3]);
-                                ImGui::TextWrapped("storing value: %d in address: %s", cpuObj.lastValue, curAddress.c_str());
+                                //curAddress.append(ins[3]);
+                                //int memNum = cpuObj.meme.readMemory(cpuObj.registers[cpuObj.targetr + cpuObj.imm]);
+                                ImGui::TextWrapped("storing value: %d in address: %s", cpuObj.registers[cpuObj.r1], cpuObj.lastMem.c_str());
                                 //Computed address must be a multiple of 4
-                                memAdds.push_back(curAddress);
-                                memVals.push_back(cpuObj.lastValue);
-                                memAdds.push_back("");
-                                memVals.push_back(0);
+                                memAdds.push_back(ins[2].c_str());
+                                memVals.push_back(cpuObj.registers[(cpuObj.r1)]);
+                                //memAdds.push_back("");
+                                //memVals.push_back(0);
                                 g++;
                                 
                             }

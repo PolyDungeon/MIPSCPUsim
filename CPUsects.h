@@ -35,6 +35,7 @@ namespace CPU{
       int beqCount = 0;
       vector<int> registers;
       int lastAddress = 0;
+      string lastMem = "";
       int lastValue = 0;
 
       CPUsects()
